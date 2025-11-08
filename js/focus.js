@@ -19,9 +19,25 @@ function stopInterval(){
     id=null; 
 }
 
+function ensurePauseButton(){
+    let btn = document.getElementById("pause-resume-btn");
+    if(state ==="idle"){
+        if(btn) btn.remove();
+        return;
+    }
+    //if the button is not here
+    if(!btn){
+        btn = document.createElement("button");
+        btn.setAttribute("id", "pause-resume-btn");
+        btn.addEventListener("click",onPauseResume);
+        container.appendChild(btn);
+    }
+    btn.textContent = state ==="running" ?"Pause"  :"Resume";
+}
+
 function render(){
     mainButton.textContent = state === "idle" ? "Start" : "Finish";
-    //ensurePauseButton();
+    ensurePauseButton();
     display.textContent = sec;
 }
 
@@ -45,6 +61,19 @@ function onMainClick(){
     render();
 }
 
+function onPauseResume(){
+    if(state ==="running"){
+        stopInterval();
+        state = "paused";
+    }
+    else if(state ==="paused"){
+        state = "running";
+        startInterval();
+    }
+    render();
+}
+
 
 
 mainButton.addEventListener("click", onMainClick);
+render();
