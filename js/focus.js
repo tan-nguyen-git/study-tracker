@@ -19,7 +19,7 @@ let signal = false;
 //every time hit the button startCounting is called 
 let id = 0;
 function startCounting(signal){
-    if(mainButton.textContent ==="Finish"){
+    if(mainButton.textContent ==="Finish" && !signal){
         //what finish do? counting from start
         //change the button to start again
         stopCounting();
@@ -31,12 +31,12 @@ function startCounting(signal){
         if(toRemove) toRemove.remove();
 
     }
-    else if((id ==0 && mainButton.textContent ==="Start") || signal ){
+    else if((id ==0 && mainButton.textContent ==="Start") || signal){
         id = setInterval(()=>{ //this is to stop etc
             numSec++;
             second.textContent = numSec;
         },1000); //delay is 1000ms = 1sec.
-        // if(signal == false){
+        if(!signal){
             mainButton.textContent = "Finish";
             //add resume and stop button ....
             const btn = document.createElement('button');
@@ -45,10 +45,9 @@ function startCounting(signal){
             const container = document.getElementById("timer");
             container.appendChild(btn);
             btn.setAttribute('onclick', 'pauseReBtn()');
-        // }
-
+        }
     }
-   
+    
 }
 //function for the pauseReBtn
 
