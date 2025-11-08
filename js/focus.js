@@ -1,76 +1,50 @@
-//let second = 0;
-//let timer = null;
-//what do you tryna do here
-let numSec =0; // starting time
-// the setInterval method
+const container = document.getElementById("timer"); // this is the container to append the child
+const display = document.getElementById("display");
+const mainButton = document.getElementById("start-button");
 
-let second = document.getElementById("display");
-let mainButton = document.getElementById("start-button");
-second.textContent = numSec;
-let signal = false;
+let id =null;
+let state = "idle"; //state will be idle, running and stop
+let sec = 0;
 
-
-
-//you need to add something that stop the user to click the button
-//multiple time
-//how to prevent the user to hit it multiple time ?
-
-//need to change the start to resume if it already run
-//every time hit the button startCounting is called 
-let id = 0;
-function startCounting(signal){
-    if(mainButton.textContent ==="Finish" && !signal){
-        //what finish do? counting from start
-        //change the button to start again
-        stopCounting();
-        numSec =0;
-        second.textContent = numSec;
-        mainButton.textContent ="Start";
-        //remove the pause/resume btn
-        const toRemove = document.getElementById("pause-resume-btn");
-        if(toRemove) toRemove.remove();
-
-    }
-    else if((id ==0 && mainButton.textContent ==="Start") || signal){
-        id = setInterval(()=>{ //this is to stop etc
-            numSec++;
-            second.textContent = numSec;
-        },1000); //delay is 1000ms = 1sec.
-        if(!signal){
-            mainButton.textContent = "Finish";
-            //add resume and stop button ....
-            const btn = document.createElement('button');
-            btn.textContent = "Pause";
-            btn.setAttribute('id','pause-resume-btn');
-            const container = document.getElementById("timer");
-            container.appendChild(btn);
-            btn.setAttribute('onclick', 'pauseReBtn()');
-        }
-    }
-    
+function startInterval(){
+    if(id) return; //if they already run then return to prevent start twice
+    id = setInterval(()=>{
+        sec++;
+        display.textContent = sec;
+    }, 1000);
 }
-//function for the pauseReBtn
-
-function pauseReBtn(){
-    btn = document.getElementById("pause-resume-btn");
-    if(btn.textContent ==="Pause"){
-        btn.textContent ="Resume";
-        //call the stopCoungting function
-        stopCounting();
-    }
-    else if(btn.textContent ==="Resume"){
-        btn.textContent ="Pause";
-        signal = true;
-        startCounting(signal); //bug here ...
-    }
-
-}
-
-// this function stop the counting and set id = 0
-function stopCounting(){
+function stopInterval(){
+    if(!id) return;
     clearInterval(id);
-    id=0;
+    id=null; 
+}
+
+function render(){
+    mainButton.textContent = state === "idle" ? "Start" : "Finish";
+    //ensurePauseButton();
+    display.textContent = sec;
+}
+
+
+function onMainClick(){
+    //running if it is idle
+    if(state ==="idle"){
+        //state is now running
+        state = "running";
+        startInterval();
+    }
+    //if it on running or paused
+    //then hit finish will finish the timer
+    else{
+        stopInterval();
+        sec = 0;
+        state = "idle";
+    }
+    //display
+    //changing the Start -> finish, finish to Start 
+    render();
 }
 
 
 
+mainButton.addEventListener("click", onMainClick);
